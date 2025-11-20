@@ -66,8 +66,8 @@ resource "aws_iam_user_policy_attachment" "attach-chkp-cg-controller-sts-policy"
 resource "random_string" "sts-external-id" {
   length  = 20
   special = false
-  lower = true
-  upper = false
+  lower   = true
+  upper   = false
 }
 
 # Creating the Cross account role in all the child accounts
@@ -78,9 +78,9 @@ resource "aws_cloudformation_stack_set" "cloudguard-controller-org-permissions" 
 
   auto_deployment { enabled = true }
   operation_preferences {
-    region_order = [ var.aws-region ]
-    max_concurrent_percentage = 100
-    failure_tolerance_percentage = 100
+    region_order                  = [ var.aws-region ]
+    max_concurrent_percentage     = 100
+    failure_tolerance_percentage  = 100
   }
 
   template_body = file("resources/cg-controller-role.yml")
@@ -95,8 +95,8 @@ resource "aws_cloudformation_stack_set" "cloudguard-controller-org-permissions" 
   }
 }
 resource "aws_cloudformation_stack_set_instance" "cft-deploy-organization" {
-  region         = var.aws-region
   stack_set_name = aws_cloudformation_stack_set.cloudguard-controller-org-permissions.name
+  stack_set_instance_region = var.aws-region
 
   deployment_targets {
     organizational_unit_ids = [data.aws_organizations_organization.aws-organization.roots[0].id]
